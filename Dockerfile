@@ -12,10 +12,15 @@ COPY ./requirement.txt /tmp/requirement.txt
 COPY ./requirement.dev.txt /tmp/requirement.dev.txt
 
 # Installer les dépendances
-RUN pip install --upgrade pip && \
-    pip install -r /tmp/requirement.txt && \
-    if [ "$DEV" = "true" ]; then pip install -r /tmp/requirement.dev.txt; fi && \
-    rm -f /tmp/requirement.txt /tmp/requirement.dev.txt
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    build-essential \
+    libpq-dev \
+    && pip install --upgrade pip \
+    && pip install -r /tmp/requirement.txt \
+    && if [ "$DEV" = "true" ]; then pip install -r /tmp/requirement.dev.txt; fi \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f /tmp/requirement.txt /tmp/requirement.dev.txt
 
 # Créer un utilisateur non-root
 RUN adduser \
