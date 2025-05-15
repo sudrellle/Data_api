@@ -1,44 +1,30 @@
-# Toujours spécifier une version de Python
-FROM python:3.9
+FROM python:3.9	
+LABEL maintainer="esthermban.com"
+# Déclarer les arguments en haut	
+ENV PYTHONUNBUFFERED 1
+ARG DEV=false	
+# Définir le répertoire de travail	
+COPY ./requirements.txt /tmp/requirements.txt
+COPY ./app /app
+	
 
-# Déclarer les arguments en haut
-ARG DEV=false
-
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers requirements d'abord pour optimiser le cache
-COPY ./requirement.txt /tmp/requirement.txt
-COPY ./requirement.dev.txt /tmp/requirement.dev.txt
-COPY wait_for_it.sh /wait_for_it.sh
-# Installer les dépendances
-RUN chmod +x /wait_for_it.sh
-RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    build-essential \
-    libpq-dev \
-    && pip install --upgrade pip \
-    && pip install -r /tmp/requirement.txt \
-    && if [ "$DEV" = "true" ]; then pip install -r /tmp/requirement.dev.txt; fi \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -f /tmp/requirement.txt /tmp/requirement.dev.txt
 
-# Créer un utilisateur non-root
-RUN adduser \
-    --disabled-password \
-    --no-create-home \
-    django-user
-
-# Copier le code source de l'application
-COPY . /app
-
-# Configurer les variables d'environnement
-ENV PYTHONUNBUFFERED=1
-
-# Utiliser un utilisateur non-root
-USER django-user
-
-# Exposer le port
 EXPOSE 8000
 
+RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    /py/bin/pip install -r /tmp/requirements.txt && \
+    if [ $DEV = "true" ]; \
+        then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
+    fi && \
+    rm -rf /tmp && \
+    adduser \
+        --disabled-password \
+        --no-create-home \
+        django-user
 
+ENV PATH="/py/bin:$PATH"
+ 
+USER django-user
