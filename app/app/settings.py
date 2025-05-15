@@ -76,13 +76,21 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-    'Engine':'django.db.backends.postgresql',
+    'ENGINE':'django.db.backends.postgresql',
     'Host':os.environ.get('DB_HOST'),
     'NAME':os.environ.get('DB_NAME'),
     'USER':os.environ.get('DB_USER') ,
     'PASSWORD':os.environ.get('DB_PASS') ,
+    'PORT': '5432',
+    'OPTIONS': {
+            'connect_timeout': 5,
+            'client_encoding': 'UTF8',
+            # Force explicitement TCP/IP et désactive le socket Unix
+            'sslmode': 'disable',
+            'hostaddr': 'db',  # Force la résolution DNS
+        }
+ 
     
-
     }
 }
 

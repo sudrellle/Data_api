@@ -10,8 +10,9 @@ WORKDIR /app
 # Copier les fichiers requirements d'abord pour optimiser le cache
 COPY ./requirement.txt /tmp/requirement.txt
 COPY ./requirement.dev.txt /tmp/requirement.dev.txt
-
+COPY wait_for_it.sh /wait_for_it.sh
 # Installer les dépendances
+RUN chmod +x /wait_for_it.sh
 RUN apt-get update && apt-get install -y \
     postgresql-client \
     build-essential \

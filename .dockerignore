@@ -1,10 +1,10 @@
 .git
 .gitignore
 .docker
-app/_pycache_/
-app/*/_pycache_/
-app/*/*/_pycache_/
-app/*/*/*/_pycache_/
+app/__pycache__/
+app/*/__pycache__/
+app/*/*/__pycache__/
+app/*/*/*/__pycache__/
 
 .env/
 .venv/
